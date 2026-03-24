@@ -206,3 +206,4 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 finance-projects/banksim-fraud-detection/data/banksim*.csv
+.DS_Store

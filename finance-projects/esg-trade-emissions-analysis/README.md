@@ -8,15 +8,15 @@ This repository evaluates whether strict domestic climate regulations paradoxica
 ## Repository Structure
 The project is modularized into three sequential Jupyter Notebooks to maintain clear separation of concerns between data exploration, causal inference, and model stability testing:
 
-### ••01_eda.ipynb: Data Ingestion, Cleaning & Exploratory Analysis•• ###
+### 01_eda.ipynb: Data Ingestion, Cleaning & Exploratory Analysis ###
 * Aligns global trade datasets with territorial and consumption carbon metrics.
 * Exposes the "Rotterdam Effect" structural outlier and identifies variables with critical multicollinearity.
 
-### ••02_modelling.ipynb: Econometric Estimation & Fixed-Effects•• ###
+### 02_modelling.ipynb: Econometric Estimation & Fixed-Effects ###
 * Implements Two-Way Fixed Effects to control for unobserved country and year characteristics.
 * Evaluates the direct impacts of environmental policy stringency and European carbon market pricing.
 
-### ••03_robustness_checks.ipynb: Stress-Testing & Sensitivity Matrix•• ###
+### 03_robustness_checks.ipynb: Stress-Testing & Sensitivity Matrix ###
 * Validates the core findings against temporal shocks, reverse-causality lags, and extreme sample exclusions.
 
 ---

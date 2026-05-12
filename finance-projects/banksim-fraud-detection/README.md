@@ -1,126 +1,65 @@
-# BankSim Fraud Detection
+# BankSim Fraud Detection Project
 
-## Overview
-This project develops a fraud detection framework using the BankSim synthetic transaction dataset. The objective is to identify suspicious financial behaviour by combining exploratory data analysis, statistical reasoning, and machine learning techniques.
+## Project Overview
+This project builds a clean machine learning pipeline to spot fraudulent credit card transactions using the BankSim dataset. 
 
-The project follows a structured workflow: understanding transaction patterns, building baseline models, and improving performance through feature engineering and advanced modelling.
+Because financial fraud is rare (accounting for less than 1% of the data), looking at simple accuracy scores is misleading—a model could just guess "not fraud" every time and be 99% accurate. Instead, this project focuses on **feature engineering** to catch suspicious behavior and uses proper metrics like **ROC AUC and Precision-Recall** to evaluate success.
 
----
-
-## Objectives
-- Analyse transaction-level data to identify fraud patterns
-- Build and evaluate baseline classification models
-- Engineer features that capture behavioural anomalies
-- Improve model performance using machine learning techniques
-
----
-
-## Dataset Description
-The dataset consists of simulated financial transactions. Each row represents a transaction between a sender and a receiver.
-
-Key variables include:
-
-- **amount** – transaction value  
-- **type** – transaction category (e.g. transfer, payment, cash-out)  
-- **nameOrig** – sender ID  
-- **nameDest** – receiver ID  
-- **oldbalanceOrg / newbalanceOrig** – sender balance before and after transaction  
-- **oldbalanceDest / newbalanceDest** – receiver balance before and after transaction  
-- **isFraud** – target variable (fraud vs legitimate)  
+The project is split into three separate notebooks to keep the code clean and modular.
 
 ---
 
 ## Project Structure
+
+```text
 banksim-fraud-detection/
-│
-├── data/
-├── notebooks/
-│   ├── 01_eda_and_imputation.ipynb
-│   ├── 02_modelling_and_roc.ipynb
-│   ├── 03_feature_engineering_and_advanced_modelling.ipynb
-└── README.md
+├── data/                    # Raw and processed datasets
+├── notebooks/               # Step-by-step project code
+│   ├── 01_eda_cleaning.ipynb       # Cleaning, exploring, and handling missing data
+│   ├── 02_baseline_model.ipynb     # Setting up our first simple model (Logistic Regression)
+│   └── 03_advanced_models.ipynb    # Grouping features and building a Random Forest
+└── README.md                # Project overview and summary
+```
 
 ---
 
-## Methodology
+## What Happens in Each Notebook
 
-### 1. Exploratory Data Analysis
-- Analysed distributions of transaction amounts
-- Compared fraud vs non-fraud behaviour
-- Identified strong class imbalance
-- Explored transaction types and their relationship to fraud
+### 1. Data Cleaning and Exploration (`01_eda_cleaning.ipynb`)
+* Analysed spending amounts and categories to see where fraudulent transactions cluster.
+* Handled the extreme imbalance in the data (separating normal spending from fraud).
+* Tested different ways to fill in missing data (imputation) to make sure the data stays clean for our models.
 
----
+### 2. Building a Baseline Model (`02_baseline_model.ipynb`)
+* Built a simple **Logistic Regression** model first. Starting with a basic model creates a benchmark so we can tell if more advanced models are actually worth the extra effort.
+* Evaluated performance using ROC curves to make sure the model is actually good at telling the difference between fraud and normal transactions.
 
-### 2. Data Preparation
-- Cleaned and structured data for modelling
-- Introduced missing values and applied imputation techniques
-- Ensured dataset consistency and usability
+### 3. Smart Features & Advanced Models (`03_advanced_models.ipynb`)
+Instead of just giving the model raw transaction numbers, new features were created to help the model think like a fraud investigator:
+* **Relative Transaction Size (Z-Score):** Measures how much a transaction deviates from that specific customer’s normal spending habits.
+* **Balance Consistency Check:** Calculates the difference between the starting balance, the ending balance, and the transaction cost to find accounting mismatches.
+* **Transaction Grouping:** Encodes specific high-risk categories (like cash-outs and international transfers) so the model can spot patterns easily.
 
----
-
-### 3. Baseline Modelling
-- Logistic Regression model used as a benchmark
-- Performance evaluated using ROC AUC
-- Established a baseline for comparison with advanced models
+Finally, a **Random Forest** model was trained on the data. It successfully handled complex patterns and significantly reduced the number of missed fraud cases (false negatives).
 
 ---
 
-### 4. Advanced Extension: Feature Engineering & Machine Learning
+## Key Findings
 
-Feature engineering was introduced to better capture behavioural anomalies:
-
-- **Relative transaction size (z-score)**  
-  Measures how unusual a transaction is compared to a customer’s typical behaviour  
-
-- **Balance consistency checks**  
-  Detect discrepancies between expected and actual balance changes  
-
-- **Transaction type encoding**  
-  Converts categorical variables into model-ready features  
-
-A Random Forest classifier was trained on these engineered features.
-
-To ensure computational efficiency while maintaining representativeness, a sampled dataset was used for training.
+* **Behavior Beats Amount:** Just looking at the dollar amount of a transaction is not enough. The most powerful indicator of fraud is how much a transaction breaks a customer's typical behavioral pattern (their Z-Score).
+* **High-Risk Channels:** Fraud rarely happens on small, everyday purchases. It is heavily concentrated in specific categories like cash-outs and transfers.
+* **Tree Models Win:** The Random Forest model easily beat the baseline linear model because it is much better at identifying complex, overlapping warning signs.
 
 ---
 
-## Results
-
-- Feature engineering improved the model’s ability to distinguish fraudulent transactions  
-- Behavioural features (e.g. transaction deviation, balance inconsistencies) were among the most important predictors  
-- Random Forest outperformed baseline models by capturing non-linear patterns in the data  
+## Tech Stack
+* **Languages:** Python
+* **Libraries:** Pandas, NumPy, Scikit-Learn, Matplotlib, Seaborn
 
 ---
 
-## Key Insights
+## Project Limitations & Next Steps
 
-- Fraud detection is more effective when focusing on **behavioural anomalies**, not just raw transaction values  
-- Transaction type plays a significant role in fraud likelihood  
-- Balance inconsistencies are strong indicators of suspicious activity  
-
----
-
-## Tools & Technologies
-
-- Python (pandas, numpy)  
-- scikit-learn  
-- matplotlib, seaborn  
-
----
-
-## Limitations
-
-- Dataset is synthetic and may not fully reflect real-world financial behaviour  
-- Customer identifiers are assumed to be stable, which may not always hold in practice  
-- Time-based and network effects are not fully explored  
-
----
-
-## Future Improvements
-
-- Time-based features (e.g. transaction frequency, velocity)  
-- Network-based fraud detection (relationships between accounts)  
-- Advanced anomaly detection methods (Isolation Forest, Autoencoders)  
-
----
+* **Synthetic Data Limitations:** BankSim is a simulated dataset. While it is excellent for building pipelines, real-world bank data has more complex network relationships.
+* **Static Identities:** The model assumes account numbers are completely secure, whereas real fraud often involves identity theft.
+* **Next Steps:** Future versions of this pipeline will test **Isolation Forests** (unsupervised anomaly detection) and graph analytics to uncover organised networks of matching fraud accounts.
